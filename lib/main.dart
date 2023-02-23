@@ -8,6 +8,7 @@ void main() {
   runApp(
     MaterialApp(
       home: Home(),
+      debugShowCheckedModeBanner: false,
     ),
   );
 }
@@ -24,7 +25,40 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Lista de Tarefas"),
+        backgroundColor: Colors.blueAccent,
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(17, 1, 7, 1),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                        labelText: "Nova tarefa2",
+                        labelStyle: TextStyle(
+                          color: Colors.blueAccent,
+                        )),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                  onPressed: () {},
+                  child: Text("ADD"),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Future<File> _getFile() async {

@@ -84,29 +84,53 @@ class _HomeState extends State<Home> {
             child: ListView.builder(
               padding: EdgeInsets.only(top: 10),
               itemCount: _todoList.length,
-              itemBuilder: (context, index) {
-                return CheckboxListTile(
-                  title: Text(_todoList[index]['title']),
-                  value: _todoList[index]["ok"],
-                  secondary: CircleAvatar(
-                    child: Icon(
-                      _todoList[index]['ok'] ? Icons.check : Icons.error,
-                    ),
-                  ),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _todoList[index]['ok'] = value;
-                      _saveData();
-                    });
-                  },
-                );
-              },
+              itemBuilder: buildItem,
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget buildItem(context, index) {
+    // Arrata o item para o lado p/ deletar
+    return Dismissible(
+      key: Key(DateTime.now()
+          .millisecondsSinceEpoch
+          .toString()), // Key pegando o time atual em milesse
+      background: Container(
+        color: Colors.red,
+        child: Align(
+          alignment: Alignment(-0.9, 0), //Distancia X e Y que o item vai ficar
+          child: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      direction:
+          DismissDirection.startToEnd, //Direção que vai dar o dismissible,
+      child: CheckboxListTile(
+        title: Text(_todoList[index]['title']),
+        value: _todoList[index]["ok"],
+        secondary: CircleAvatar(
+          child: Icon(
+            _todoList[index]['ok'] ? Icons.check : Icons.error,
+          ),
+        ),
+        onChanged: (bool? value) {
+          setState(() {
+            _todoList[index]['ok'] = value;
+            _saveData();
+          });
+        },
+      ), // Ação do dosmissible
+    );
+  }
+
+  /*
+  
+    */
 
   Future<File> _getFile() async {
     final directory =

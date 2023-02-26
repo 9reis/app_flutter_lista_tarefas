@@ -24,6 +24,8 @@ class _HomeState extends State<Home> {
   final _todoController = TextEditingController();
 
   List _todoList = [];
+  late Map<String, dynamic> _lastRemoved;
+  late int _lastRemovedPos;
 
   @override
   void initState() {
@@ -95,63 +97,90 @@ class _HomeState extends State<Home> {
   Widget buildItem(context, index) {
     // Arrata o item para o lado p/ deletar
     return Dismissible(
-      key: Key(DateTime.now()
-          .millisecondsSinceEpoch
-          .toString()), // Key pegando o time atual em milesse
-      background: Container(
-        color: Colors.red,
-        child: Align(
-          alignment: Alignment(-0.9, 0), //Distancia X e Y que o item vai ficar
-          child: Icon(
-            Icons.delete,
-            color: Colors.white,
+        key: Key(DateTime.now()
+            .millisecondsSinceEpoch
+            .toString()), // Key pegando o time atual em milesse
+        background: Container(
+          color: Colors.red,
+          child: Align(
+            alignment:
+                Alignment(-0.9, 0), //Distancia X e Y que o item vai ficar
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
         ),
-      ),
-      direction:
-          DismissDirection.startToEnd, //Direção que vai dar o dismissible,
-      child: CheckboxListTile(
-        title: Text(_todoList[index]['title']),
-        value: _todoList[index]["ok"],
-        secondary: CircleAvatar(
-          child: Icon(
-            _todoList[index]['ok'] ? Icons.check : Icons.error,
+        direction:
+            DismissDirection.startToEnd, //Direção que vai dar o dismissible,
+        child: CheckboxListTile(
+          // Ação do dosmissible
+          title: Text(_todoList[index]['title']),
+          value: _todoList[index]["ok"],
+          secondary: CircleAvatar(
+            child: Icon(
+              _todoList[index]['ok'] ? Icons.check : Icons.error,
+            ),
           ),
+          onChanged: (bool? value) {
+            setState(() {
+              _todoList[index]['ok'] = value;
+              _saveData();
+            });
+          },
         ),
-        onChanged: (bool? value) {
+        // Ação quando executar o dismissB
+        onDismissed: (direction) {
           setState(() {
-            _todoList[index]['ok'] = value;
-            _saveData();
-          });
-        },
-      ), // Ação do dosmissible
-    );
-  }
+            _lastRemoved = Map.from(_todoList[index]);
+            _lastRemovedPos = index;
+            _todoList.removeAt(index);
 
-  /*
+            _saveData();
+
+            final snack = SnackBar(
+              content: Text("Tarefa ${_lastRemoved["title"]} removida!"),
+              action: SnackBarAction(
+                  label: "Desfazer",
+                  onPressed: () {
+                    setState(() {
+                      _todoList.insert(_lastRemovedPos, _lastRemoved);
+                      _saveData();
+                    });
+                  }),
+              duration: Duration(seconds: 3),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snack);
+          });
+        });
+  }
+}
+
+/*
   
     */
 
-  Future<File> _getFile() async {
-    final directory =
-        await getApplicationDocumentsDirectory(); //Pega o arq que irá SALVAR os dados
-    return File("${directory.path}/data.json"); //Abre o arq
-  }
+Future<File> _getFile() async {
+  final directory =
+      await getApplicationDocumentsDirectory(); //Pega o arq que irá SALVAR os dados
+  return File("${directory.path}/data.json"); //Abre o arq
+}
 
-  //Ler e salvar arq tem que ser async
-  //SALVA os dados
-  Future<File> _saveData() async {
-    String data = json.encode(_todoList); // Lista TO json
+//Ler e salvar arq tem que ser async
+//SALVA os dados
+Future<File> _saveData() async {
+  String data = json.encode(_todoList); // Lista TO json
+  final file = await _getFile(); //Pega o arq
+  return file.writeAsString(data); //Escreve/Salva os dados no arq
+}
+
+class _todoList {}
+
+Future<String?> _readData() async {
+  try {
     final file = await _getFile(); //Pega o arq
-    return file.writeAsString(data); //Escreve/Salva os dados no arq
-  }
-
-  Future<String?> _readData() async {
-    try {
-      final file = await _getFile(); //Pega o arq
-      return file.readAsString(); // Lê o arq
-    } catch (e) {
-      return null;
-    }
+    return file.readAsString(); // Lê o arq
+  } catch (e) {
+    return null;
   }
 }

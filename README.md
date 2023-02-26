@@ -1,16 +1,19 @@
-# app_flutter_lista_tarefas
+# TODO List
+<br>
 
-A new Flutter project.
+<b>
+App TodoList onde é possivel Adicionar, Ler , Salvar e Remover os itens arrastando para o lado
+Podendo marcar os itens como conluido, ondenar os itens em concluidos e não concluidos.
+Com persistencia de dados onde salva os itens adicionados mesmo após fechar a aplicação.
+</b>
+<br><br>
 
-## Getting Started
+Utilizando: <br>
+:white_large_square: Package Path_Provider <br>
+:white_large_square: Persistencia de dados <br>
+:white_large_square: Snackbar <br>
+:white_large_square: Dismissible <br>
+:white_large_square: Ordenação de itens <br><br>
 
-This project is a starting point for a Flutter application.
+https://user-images.githubusercontent.com/106397008/221423139-31c7e105-f6f8-45ad-b472-3f7c6b70cf1f.mp4
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
